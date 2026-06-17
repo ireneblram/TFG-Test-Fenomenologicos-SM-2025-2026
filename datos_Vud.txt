@@ -1,0 +1,16 @@
+# Valor, Error, Etiqueta, Identificador_o_Codigo_Color	
+0.97367, 0.00032, Superallowed nuclear $\beta$ decays $0^+ \to 0^+$, #431c67	
+0.97441, 0.00088, Neutron $\beta$ decay (Average), #8C564B	
+0.97413, 0.00043, Neutron $\beta$ decay (Best Values), #8C564B	
+0.97386, 0.00283, Pion $\beta$ decay ($\pi_{e3}$), #008080	
+
+
+
+
+
+
+
+
+
+
+

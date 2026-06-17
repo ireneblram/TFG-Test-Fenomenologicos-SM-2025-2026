@@ -1,0 +1,17 @@
+# Valor, Error, Etiqueta, Identificador_o_Codigo_Color
+0.2233, 0.00053, Kaon semileptonic decays ($K_{\ell3}$), #1e5491
+0.2250, 0.00050, Kaon leptonic decays ($K_{\mu2}/ \pi_{\mu 2}$), #911e1e
+0.2250, 0.00270, Hyperon decays, #b72aa6
+0.2189, 0.00193, Inclusive Hadronic $\tau$ decays (Lattice), #1e912dc4
+0.2184, 0.00210, Inclusive Hadronic $\tau$ decays (OPE), #2ca02c
+0.2224, 0.00170, Exclusive $\tau$ decays ($\tau \to K \nu_\tau$), #1b5e20
+0.2229, 0.00190, Exclusive $\tau$ decays ($\tau \to K/\pi \nu_\tau$), #1b5e20
+0.2225, 0.00170, Exclusive $\tau$ decays (Average), #1b5e20
+0.2207, 0.00140, $\tau$ decays (Average), #3f523c
+0.227962126, 0.001366781, Superallowed nuclear $\beta$ decays $0^+ \to 0^+$, #431c67
+0.224778006, 0.00381479, Neutron $\beta$ decay (Average), #8C564B
+0.225988369, 0.001853529, Neutron $\beta$ decay (Best Values), #8C564B
+0.227149071, 0.012133106, Pion $\beta$ decay ($\pi_{e3}$), #008080
+
+
+
