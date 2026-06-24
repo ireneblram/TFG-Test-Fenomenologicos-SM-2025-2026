@@ -63,7 +63,7 @@ def modelo(p):
 
 
 # CORRELACIÓN TEÓRICA vs EXPERIMENTAL
-# Bajamos N a 40 para que no tarde mucho (40x40 = 1600 ajustes)
+
 N = 40 
 rho_A_vals = np.linspace(-1, 1, N) # Eje X (Experimental)
 rho_B_vals = np.linspace(-1, 1, N) # Eje Y (Teórica)
@@ -76,7 +76,7 @@ print(f"Ejecutando {N*N} ajustes para el mapa 2D...")
 for i, r_A in enumerate(rho_A_vals):
     for j, r_B in enumerate(rho_B_vals):
         
-        # --- Sector A (EXPERIMENTAL) ---
+        #  Sector A 
         cov_A_sl_lep = r_A * sigma_A_semi * sigma_A_lep
         cov_A_sl_s2  = 1.0 * sigma_A_semi * sigma_A_semi2
         cov_A_lep_s2 = r_A * sigma_A_lep * sigma_A_semi2
@@ -88,7 +88,7 @@ for i, r_A in enumerate(rho_A_vals):
         ])
         A_semileptonic, A_Leptonic, A_semi_2 = gv.gvar([mean_A_semi, mean_A_lep, mean_A_semi2], cov_matrix_A)
 
-        # --- Sector B (TEÓRICO) ---
+        # Sector B 
         cov_B_sl_lep = r_B * sigma_B_semi * sigma_B_lep
         cov_matrix_B = np.array([
             [sigma_B_semi**2, cov_B_sl_lep],
@@ -106,7 +106,7 @@ for i, r_A in enumerate(rho_A_vals):
             'T-exclusive': A_texclusive / B_texclusive, 'Rus': Rus
         }
 
-        # --- Ajuste y cálculo de la tensión (svdcut para evitar que el ajuste colapse en zonas extremas) ---
+       
         try:
             fit = lsqfit.nonlinear_fit(data=y_data, prior=priors, fcn=modelo, svdcut=1e-3)
             vud_res, vus_res = fit.p['vud'], fit.p['vus']
@@ -127,19 +127,17 @@ for i, r_A in enumerate(rho_A_vals):
 
 print("Ajustes completados. Generando gráfico...")
 
-# ==============================================================================
-# 3. REPRESENTACIÓN GRÁFICA (MAPA DE CONTORNOS)
-# ==============================================================================
+
 mpl.rcParams.update({'font.size': 11, 'axes.labelsize': 13})
 fig, ax = plt.subplots(figsize=(8, 6.5))
 
 # Creamos la malla para los ejes
 X, Y = np.meshgrid(rho_A_vals, rho_B_vals)
 
-# 1. Creamos una escala de colores MUY detallada (50 niveles) pero SOLO entre 1.0 y 5.0 sigmas
+
 niveles_color = np.linspace(1.0, 5.0, 50)
 
-# 2. Dibujamos el mapa usando esos niveles. 
+ 
 # El parámetro extend='max' le dice que todo lo que supere el 5.0 lo pinte del rojo máximo y lo agrupe ahí.
 mapa = ax.contourf(X, Y, sigmas_matrix, 
                    levels=niveles_color, 
@@ -150,7 +148,7 @@ mapa = ax.contourf(X, Y, sigmas_matrix,
 lineas = ax.contour(X, Y, sigmas_matrix, levels=[1.5, 2, 3], colors='black', linestyles='dashed', linewidths=1.2)
 ax.clabel(lineas, inline=True, fontsize=10, fmt='%1.0f $\sigma$')
 
-# Línea diagonal rho_A = rho_B (Lo que hacías antes)
+# Línea diagonal rho_A = rho_B 
 ax.plot([-1, 1], [-1, 1], color="#649dc6", linestyle=':', lw=2, label=r'$\rho_{th} = \rho_{exp}$')
 
 # Barra de color a la derecha
@@ -162,13 +160,13 @@ ax.set_xlabel(r'Correlación Experimental  ($\rho_{exp}$)', fontsize=16)
 ax.set_ylabel(r'Correlación Teórica  ($\rho_{th}$)', fontsize=16)
 ax.legend(loc='lower left', framealpha=0.9)
 
-# 1. "Apagamos" el Cuadrante Superior Izquierdo (X < 0, Y > 0)
+
 ax.fill_between(x=[-1, 0], y1=[0, 0], y2=[1, 1], color="#C5BFBF5C", alpha=0.35, zorder=1)
 
-# 2. "Apagamos" el Cuadrante Inferior Derecho (X > 0, Y < 0)
+
 ax.fill_between(x=[0, 1], y1=[-1, -1], y2=[0, 0], color="#C5BFBF5C", alpha=0.35, zorder=1)
 
-# 3. Ponemos los textos descriptivos en los cuadrantes que han quedado limpios
+
 ax.text(0.25, 0.9, 'Correlaciones\nPositivas', 
         color='black', alpha=0.9, ha='center', va='center', fontsize=13, zorder=2)   
 
