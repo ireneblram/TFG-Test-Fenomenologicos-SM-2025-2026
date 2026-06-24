@@ -2,9 +2,7 @@ import gvar as gv
 import lsqfit
 import numpy as np
 
-# ==============================================================================
-# 1. DATOS INDEPENDIENTES (Constantes fijas fuera del bucle para optimizar)
-# ==============================================================================
+
 # Superallowed beta decays
 K = gv.gvar(8120.27648E-10, 2.6E-14) 
 GF = gv.gvar(1.1663787E-5, 6.6E-12)
@@ -46,9 +44,7 @@ mean_A_semi2, sigma_A_semi2 = 0.22216, 0.00075505
 mean_B_semi, sigma_B_semi   = 0.9698, 0.0017
 mean_B_lep,  sigma_B_lep    = 1.1978, 0.0022 
 
-# ==============================================================================
-# 2. CONFIGURACIÓN DEL ANÁLISIS DE SENSIBILIDAD (Bucle rho)
-# ==============================================================================
+
 N = 100
 valores_rho = np.linspace(-1, 1, N)
 
@@ -77,11 +73,11 @@ def modelo(p):
 
 print(f"Ejecutando {N} ajustes correlacionados secuenciales...")
 
-# EL BUCLE: Ahora todo lo que depende de rho_valores se calcula en cada iteración
+# Bucle
 for i in range(N):
     rho_actual = valores_rho[i]
     
-    # --- Sector A (Correlaciones Teóricas/Experimentales cruzadas) ---
+    # Sector A
     rho_A_semi_lep = rho_actual   
     rho_A_semi_semi2 = 1.0        
     rho_A_lep_semi2 = rho_actual        
@@ -101,7 +97,7 @@ for i in range(N):
         cov_matrix_A
     )
 
-    # --- Sector B (Correlaciones de Lattice QCD o Factores de forma) ---
+    # Sector B
     rho_B_semi_lep = rho_actual  
     cov_B_sl_lep = rho_B_semi_lep * sigma_B_semi * sigma_B_lep
     
@@ -115,11 +111,11 @@ for i in range(N):
         cov_matrix_B
     )
     
-    # Reevaluamos B_texclusive dinámicamente con el B_Leptonic (fk_fpi) correlacionado
+    
     fk_fpi = B_Leptonic 
     B_texclusive = fk_fpi * ((m_tau**2 - m_kaon**2) / (m_tau**2 - m_pion**2)) * np.sqrt(1 + delta_exclusive)
 
-    # --- Construcción del Dataset Correlacionado para esta iteración ---
+    
     y_data = {
         'superallowed': A_superallowed / B_superallowed,
         'neutron':      A_neutron / B_neutron,
@@ -131,10 +127,10 @@ for i in range(N):
         'Rus':          Rus
     }
 
-    # --- Ejecución del ajuste no lineal bayesiano ---
+    
     fit = lsqfit.nonlinear_fit(data=y_data, prior=priors, fcn=modelo)
 
-    # --- Extracción y guardado de resultados ---
+    
     vud_res = fit.p['vud']
     vus_res = fit.p['vus']
     
@@ -150,25 +146,22 @@ for i in range(N):
 
 print("¡Proceso completado con éxito!\n")
 
-# ==============================================================================
-# 3. MUESTRA DE RESULTADOS SELECCIONADOS (Puntos críticos del escrutinio)
-# ==============================================================================
+
 print(f"{'rho_input':^10} | {'Vud central':^12} +/- {'Error Vud':<9} | {'Vus central':^12} +/- {'Error Vus':<9} | {'Chi2':^7}")
 print("-" * 75)
 
-# Te muestro una muestra representativa (cada 10 pasos) para no saturar la pantalla
+
 for idx in range(0, N, 10):
     print(f"{valores_rho[idx]:10.2f} | {vud_medias[idx]:12.5f} +/- {vud_errores[idx]:<.5f} | {vus_medias[idx]:12.5f} +/- {vus_errores[idx]:<.5f} | {chi2_valores[idx]:7.2f}")
 
 # Muestra el último punto de la lista (rho = 1.00)
 print(f"{valores_rho[-1]:10.2f} | {vud_medias[-1]:12.5f} +/- {vud_errores[-1]:<.5f} | {vus_medias[-1]:12.5f} +/- {vus_errores[-1]:<.5f} | {chi2_valores[-1]:7.2f}")
-# ==============================================================================
-# 4. GUARDADO AUTOMÁTICO DE LOS RESULTADOS EN UN FICHERO .TXT
-# ==============================================================================
+
+
 nombre_fichero = "analisis__rho_chi2.txt"
 
 with open(nombre_fichero, "w", encoding="utf-8") as f:
-    # Encabezado formal con metadatos para tu TFG
+    
     f.write("# =========================================================================\n")
     f.write("# RESULTADOS DEL ANÁLISIS DE SENSIBILIDAD - AJUSTE GLOBAL CKM (|Vud| y |Vus|)\n")
     f.write("# =========================================================================\n")
@@ -182,11 +175,11 @@ with open(nombre_fichero, "w", encoding="utf-8") as f:
     f.write("# 7. chi2        : Valor de chi-cuadrado/ grados de libertad del ajuste.\n")
     f.write("# =========================================================================\n")
     
-    # Cabecera de las columnas perfectamente alineadas
+    
     f.write(f"{'rho_input':^12}\t{'Vud_mean':^12}\t{'Vud_sdev':^12}\t{'Vus_mean':^12}\t{'Vus_sdev':^12}\t{'rho_ajuste':^12}\t{'chi2':^12}\n")
     f.write("#" + "-"*95 + "\n")
     
-    # Escritura indexada de los 100 puntos calculados con alta precisión
+    
     for i in range(N):
         f.write(f"{valores_rho[i]:12.6f}\t"
                 f"{vud_medias[i]:12.6f}\t"
