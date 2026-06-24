@@ -2,9 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.ticker as ticker
 
-# ==============================================================================
-# 1. AJUSTES ESTÉTICOS GLOBALES
-# ==============================================================================
+
 mpl.rcParams.update({
     'font.size': 16,
     'axes.labelsize': 30,   # Nombre de los ejes (|Vud| y |Vus|)
@@ -16,13 +14,10 @@ colores_lista = [
     '#9467BD', '#8C564B', '#008080', '#7F7F7F'
 ]
 
-# Diccionario global para que ambos gráficos compartan los mismos colores
-# Si usas el mismo ID en el txt de Vud y Vus, les pondrá el mismo color.
+
 mapa_colores = {} 
 
-# ==============================================================================
-# 2. FUNCIÓN PARA LEER LOS FICHEROS
-# ==============================================================================
+
 def leer_datos(nombre_fichero):
     val, err, etiq, col_id = [], [], [], []
     try:
@@ -41,14 +36,12 @@ def leer_datos(nombre_fichero):
         print(f"⚠️ Aviso: No se encontró el archivo '{nombre_fichero}'.")
     return val, err, etiq, col_id
 
-# Leemos ambos archivos (Asegúrate de tener un datos_Vus.txt creado igual que el de Vud)
+
 valores_Vud, errores_Vud, etiquetas_Vud, id_Vud = leer_datos("datos_Vud.txt")
 valores_Vus, errores_Vus, etiquetas_Vus, id_Vus = leer_datos("datos_Vus.txt")
 
-# ==============================================================================
-# 3. CREACIÓN DE LA FIGURA (2 PANELES EN PARALELO)
-# ==============================================================================
-# figsize (16, 8) hace que sea ancha para acomodar los dos gráficos cómodamente
+
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
 
 def dibujar_panel(ax, valores, errores, etiquetas, colores_id, nombre_eje, palabra_banda, color_banda):
@@ -95,16 +88,14 @@ def dibujar_panel(ax, valores, errores, etiquetas, colores_id, nombre_eje, palab
                 etiquetas[i], 
                 color=color_v, ha='center', va='top', fontsize=17)
 
-    # Estética general del panel (ax en lugar de plt)
+
     ax.set_yticks([]) 
     ax.set_xlabel(nombre_eje, labelpad=15)
     ax.grid(axis='x', linestyle=':', alpha=0.5, zorder=0)
     ax.set_ylim(-1, len(etiquetas))
 
 
-# ==============================================================================
-# 4. LLAMADAS A LA FUNCIÓN PARA DIBUJAR CADA PANEL
-# ==============================================================================
+
 # Dibujamos Vud en el panel izquierdo (ax1) buscando la palabra 'superallowed'
 dibujar_panel(ax1, valores_Vud, errores_Vud, etiquetas_Vud, id_Vud, 
               nombre_eje='$|V_{ud}|$', palabra_banda='superallowed', color_banda='#673793')
@@ -113,7 +104,7 @@ dibujar_panel(ax1, valores_Vud, errores_Vud, etiquetas_Vud, id_Vud,
 dibujar_panel(ax2, valores_Vus, errores_Vus, etiquetas_Vus, id_Vus, 
               nombre_eje='$|V_{us}|$', palabra_banda='semileptonic', color_banda='#1F77B4')
 
-# Ajustamos márgenes, guardamos y mostramos
+
 plt.tight_layout()
 plt.savefig("grafico_Vud_Vus_Paralelo.pdf", bbox_inches='tight')
 plt.show()
