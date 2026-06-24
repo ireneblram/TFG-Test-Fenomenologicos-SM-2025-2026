@@ -4,9 +4,7 @@ import matplotlib as mpl
 from matplotlib.patches import Ellipse
 import matplotlib.ticker as ticker
 
-# ==========================================
-# 1. CONFIGURACIÓN DE ESTILO
-# ==========================================
+
 mpl.rcParams.update({
     'font.size': 16,
     'axes.labelsize': 24,   # Nombre de los ejes grande
@@ -40,9 +38,7 @@ def dibujar_elipse(ax, x_mean, y_mean, sig_x, sig_y, rho, sigma_level=1, **kwarg
     return elipse
 
 
-# ==========================================
-# 2. DATOS PARA LA GRÁFICA
-# ==========================================
+# DATOS
 Vud_ajuste =  0.97381
 Vud_error  =  0.00089
 Vus_ajuste =  0.22411 
@@ -67,13 +63,11 @@ ratio_exp = 0.23108
 ratio_err = 0.00051 
 
 
-# ==========================================
-# 3. GRÁFICO COMPACTO (Máximo tamaño de elipse)
-# ==========================================
-# Cambiamos a (8, 7) para que al ir dentro del documento de LaTeX se vea grande y proporcional
+
+# GRÁFICO 
 fig, ax = plt.subplots(figsize=(8, 7))
 
-# Ajuste fino del Zoom: 4.2 sigmas abre el recuadro lo justo para ver el cruce sin dejar aire muerto
+
 factor_zoom_x = 2.2 * Vud_error
 factor_zoom_y = 3.5 * Vus_error
 
@@ -105,7 +99,7 @@ ax.fill_between(vud_rango, vus_ratio_down, vus_ratio_up,
 vus_unitaridad = np.sqrt(1 - vud_rango**2)
 ax.plot(vud_rango, vus_unitaridad, 'k-', linewidth=1.5, label=r'Unitariedad ($|V_{ud}|^2 + |V_{us}|^2 = 1$)', zorder=2)
 
-# Elipses de confianza (Rojo carmín)
+
 dibujar_elipse(ax, Vud_ajuste, Vus_ajuste, Vud_error, Vus_error, correlacion_rho, 
                sigma_level=2, edgecolor="#436E53", facecolor='#436E53', alpha=0.10, 
                label=r'Ajuste Global $2\sigma$', zorder=3)
@@ -121,11 +115,8 @@ ax.set_xlabel('$V_{ud}$', labelpad=12)
 ax.set_ylabel('$V_{us}$', labelpad=12)
 
 
-# ==========================================
-# 4. REINTEGRACIÓN INTERNA DE RECUADRO Y LEYENDA
-# ==========================================
+# LEYENDA Y CUADRO 
 
-# Definimos el texto estadístico con formato limpio
 texto_recuadro_datos = (
     f"Resultados del Ajuste Global:\n"
     f"$|V_{{ud}}| = {Vud_ajuste:.5f} \\pm {Vud_error:.5f}$\n"
@@ -136,18 +127,17 @@ texto_recuadro_datos = (
     f"$\\epsilon_s = {epsilon_s:.5f} \\pm {error_epsilon_s:.5f}$"
 )
 
-# Pintamos el recuadro ARRIBA A LA IZQUIERDA (0.04, 0.96) donde está completamente despejado
 ax.text(
     -0.08, 1.45,                            
     texto_recuadro_datos,                  
     transform=ax.transAxes,               
-    fontsize=15, # Un tamaño un punto menor para que encaje compacto sin agobiar
+    fontsize=15, 
     verticalalignment='top',              
     horizontalalignment='left', 
     linespacing=1.5,           
     bbox=dict(
         facecolor='white',                
-        alpha=0.90, # Ligera transparencia de fondo por seguridad si rozara un borde
+        alpha=0.90, 
         edgecolor="#436E53",              
         boxstyle='round,pad=0.3',
         linewidth=1.0
@@ -155,12 +145,12 @@ ax.text(
     zorder=6
 )
 
-# Colocamos la Leyenda ABAJO A LA DERECHA (loc='lower right') que es la otra zona libre
+
 handles, labels = ax.get_legend_handles_labels()
 leyenda = ax.legend(
     handles, labels, 
-    loc='lower right',                    # El punto de anclaje de la caja de la leyenda es su esquina inferior derecha
-    bbox_to_anchor=(1.1, 1.04),           # x=1.0 clava la leyenda con el borde derecho del eje                             # <--- DISTRIBUYE EN 2 COLUMNAS para que ocupe la misma altura que el texto
+    loc='lower right',                    
+    bbox_to_anchor=(1.1, 1.04),                                 
     fontsize=15, 
     framealpha=1.0, 
     edgecolor='#436E53',
@@ -170,13 +160,12 @@ leyenda.set_zorder(6)
 
 ax.grid(True, linestyle=':', alpha=0.5)
 plt.subplots_adjust(top=0.85)
-# Contorno exterior gris sutil
+
 for _, spine in ax.spines.items():
     spine.set_visible(True)
     spine.set_color("#010101")
     spine.set_linewidth(1.0)
 
-# Guardado óptimo con recorte estricto de márgenes sobrantes
 plt.savefig('elipse_2_parametro_DyS_editado.pdf', format='pdf', bbox_inches='tight')
 print("\nGráfico optimizado con éxito. Archivo guardado: 'elipse_2_parametro_DyS_editado.pdf'")
 plt.show()
